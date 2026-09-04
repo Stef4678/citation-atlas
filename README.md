@@ -144,4 +144,4 @@ Node. Only `main.ts`, `settings.ts` and `ui/` touch the Obsidian API.
 
 ## License
 
-MIT
+MIT © 2026 Kerekes Stefan
