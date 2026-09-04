@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"outDir": "build-test",
+		"module": "CommonJS",
+		"importHelpers": false,
+		"inlineSourceMap": false,
+		"inlineSources": false
+	},
+	"include": ["src/**/*.ts", "test/**/*.ts"]
+}

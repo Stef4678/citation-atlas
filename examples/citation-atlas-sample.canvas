@@ -1,0 +1,119 @@
+{
+ "nodes": [
+  {
+   "id": "g-root",
+   "type": "group",
+   "x": 0,
+   "y": 0,
+   "width": 754,
+   "height": 1090,
+   "label": "Citation Atlas · fixture"
+  },
+  {
+   "id": "g-4f908a3835728bee",
+   "type": "group",
+   "x": 0,
+   "y": 68,
+   "width": 718,
+   "height": 674,
+   "label": "Transformers"
+  },
+  {
+   "id": "n-8f85b6a2317cd2ee",
+   "type": "text",
+   "x": 26,
+   "y": 130,
+   "width": 320,
+   "height": 152,
+   "text": "**A Neural Probabilistic Language Model**\nDeep Learning Institute · 2003 · Journal article\nzk: ABC10074",
+   "color": "1"
+  },
+  {
+   "id": "n-a2a0332b50768cda",
+   "type": "text",
+   "x": 372,
+   "y": 130,
+   "width": 320,
+   "height": 152,
+   "text": "**Efficient Estimation of Word Representations in Vector Space**\nLovelace & Babbage · 2013 · Journal article\nzk: ABC10037",
+   "color": "3"
+  },
+  {
+   "id": "n-2ea4c0266e02ab82",
+   "type": "text",
+   "x": 26,
+   "y": 312,
+   "width": 320,
+   "height": 128,
+   "text": "**Attention Is All You Need**\nVaswani & Lovelace · 2017 · Journal article\nzk: ABC10000",
+   "color": "4"
+  },
+  {
+   "id": "g-01a13a5ba1865852",
+   "type": "group",
+   "x": 26,
+   "y": 480,
+   "width": 372,
+   "height": 238,
+   "label": "Language Models"
+  },
+  {
+   "id": "n-5756406a78949123",
+   "type": "text",
+   "x": 52,
+   "y": 542,
+   "width": 320,
+   "height": 152,
+   "text": "**Improving Language Understanding by Generative Pre-Training**\nRadford et al. · 2018 · Journal article\nzk: ABC10148",
+   "color": "4"
+  },
+  {
+   "id": "n-legend",
+   "type": "text",
+   "x": 0,
+   "y": 812,
+   "width": 340,
+   "height": 248,
+   "text": "**Reading status**\n• red cards — annotated\n• green cards — read\n• yellow cards — unread\n• arrow points from newer to older (cited) work\n\n**Citation Atlas · fixture**\n4 papers · 4 citation links"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e-5842be6582e1637c",
+   "fromNode": "n-2ea4c0266e02ab82",
+   "fromSide": "right",
+   "toNode": "n-a2a0332b50768cda",
+   "toSide": "left",
+   "toEnd": "arrow"
+  },
+  {
+   "id": "e-9feb834f2050e506",
+   "fromNode": "n-2ea4c0266e02ab82",
+   "fromSide": "top",
+   "toNode": "n-8f85b6a2317cd2ee",
+   "toSide": "bottom",
+   "toEnd": "arrow"
+  },
+  {
+   "id": "e-52edbae02bff9010",
+   "fromNode": "n-5756406a78949123",
+   "fromSide": "top",
+   "toNode": "n-2ea4c0266e02ab82",
+   "toSide": "bottom",
+   "toEnd": "arrow"
+  },
+  {
+   "id": "e-e3415546de9f5ea6",
+   "fromNode": "n-a2a0332b50768cda",
+   "fromSide": "left",
+   "toNode": "n-8f85b6a2317cd2ee",
+   "toSide": "right",
+   "toEnd": "arrow"
+  }
+ ],
+ "view": {
+  "x": 0,
+  "y": 0,
+  "zoom": 0.9174311926605505
+ }
+}

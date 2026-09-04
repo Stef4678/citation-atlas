@@ -1,0 +1,27 @@
+{
+	"name": "citation-atlas",
+	"version": "0.0.1",
+	"description": "Citation-map canvas export for Zotero inside Obsidian",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"typecheck": "tsc -noEmit -skipLibCheck",
+		"test:fixture": "tsx test/fixture.ts"
+	},
+	"keywords": [
+		"obsidian",
+		"zotero",
+		"canvas",
+		"citations"
+	],
+	"author": "",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^20.14.0",
+		"esbuild": "^0.21.5",
+		"obsidian": "latest",
+		"tsx": "^4.16.0",
+		"typescript": "^5.5.0"
+	}
+}

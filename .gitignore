@@ -1,0 +1,8 @@
+node_modules/
+.npm-cache/
+build-test/
+*.log
+.DS_Store
+.obsidian/
+main.js.map
+*.tsbuildinfo
