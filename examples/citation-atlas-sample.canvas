@@ -10,7 +10,7 @@
    "label": "Citation Atlas · fixture"
   },
   {
-   "id": "g-4f908a3835728bee",
+   "id": "g-50880cffd68b50fb",
    "type": "group",
    "x": 0,
    "y": 68,
@@ -19,7 +19,7 @@
    "label": "Transformers"
   },
   {
-   "id": "n-8f85b6a2317cd2ee",
+   "id": "n-b6ca1f725f26b601",
    "type": "text",
    "x": 26,
    "y": 130,
@@ -29,7 +29,7 @@
    "color": "1"
   },
   {
-   "id": "n-a2a0332b50768cda",
+   "id": "n-0d1087c17d38fdc2",
    "type": "text",
    "x": 372,
    "y": 130,
@@ -39,7 +39,7 @@
    "color": "3"
   },
   {
-   "id": "n-2ea4c0266e02ab82",
+   "id": "n-cf4da2ccca875494",
    "type": "text",
    "x": 26,
    "y": 312,
@@ -49,7 +49,7 @@
    "color": "4"
   },
   {
-   "id": "g-01a13a5ba1865852",
+   "id": "g-1704473fa8564c10",
    "type": "group",
    "x": 26,
    "y": 480,
@@ -58,7 +58,7 @@
    "label": "Language Models"
   },
   {
-   "id": "n-5756406a78949123",
+   "id": "n-1b4845f4498b15cf",
    "type": "text",
    "x": 52,
    "y": 542,
@@ -79,34 +79,34 @@
  ],
  "edges": [
   {
-   "id": "e-5842be6582e1637c",
-   "fromNode": "n-2ea4c0266e02ab82",
+   "id": "e-01314ea28c2d2f6f",
+   "fromNode": "n-cf4da2ccca875494",
    "fromSide": "right",
-   "toNode": "n-a2a0332b50768cda",
+   "toNode": "n-0d1087c17d38fdc2",
    "toSide": "left",
    "toEnd": "arrow"
   },
   {
-   "id": "e-9feb834f2050e506",
-   "fromNode": "n-2ea4c0266e02ab82",
+   "id": "e-81022587f2a3b7ba",
+   "fromNode": "n-cf4da2ccca875494",
    "fromSide": "top",
-   "toNode": "n-8f85b6a2317cd2ee",
+   "toNode": "n-b6ca1f725f26b601",
    "toSide": "bottom",
    "toEnd": "arrow"
   },
   {
-   "id": "e-52edbae02bff9010",
-   "fromNode": "n-5756406a78949123",
+   "id": "e-8a7823e05b9dcfd5",
+   "fromNode": "n-1b4845f4498b15cf",
    "fromSide": "top",
-   "toNode": "n-2ea4c0266e02ab82",
+   "toNode": "n-cf4da2ccca875494",
    "toSide": "bottom",
    "toEnd": "arrow"
   },
   {
-   "id": "e-e3415546de9f5ea6",
-   "fromNode": "n-a2a0332b50768cda",
+   "id": "e-7cc8b23e4d880912",
+   "fromNode": "n-0d1087c17d38fdc2",
    "fromSide": "left",
-   "toNode": "n-8f85b6a2317cd2ee",
+   "toNode": "n-b6ca1f725f26b601",
    "toSide": "right",
    "toEnd": "arrow"
   }

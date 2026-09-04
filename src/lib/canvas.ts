@@ -96,9 +96,18 @@ interface ShapedCard {
 	height: number;
 }
 
+/** Remove characters that have meaning inside a [[wiki link]] target/alias. */
+function stripLinkMeta(s: string): string {
+	return s
+		.split("[")
+		.join("")
+		.split("]")
+		.join("")
+		.replace(/[|#^]/g, "");
+}
+
 function wikiTarget(path: string): string {
-	const p = path.replace(/\.md$/i, "");
-	return p.replace(/[|#^\[\]]/g, "");
+	return stripLinkMeta(path.replace(/\.md$/i, ""));
 }
 
 function cardText(paper: PaperRecord, showKey: boolean): string {
@@ -107,7 +116,7 @@ function cardText(paper: PaperRecord, showKey: boolean): string {
 	let first: string;
 	if (paper.notePath) {
 		const target = wikiTarget(paper.notePath);
-		const alias = plainTitle.replace(/[|\[\]#^]/g, "").trim() || target;
+		const alias = stripLinkMeta(plainTitle).trim() || target;
 		first = `**[[${target}|${alias}]]**`;
 	} else {
 		first = `**${titlePlain}**`;
@@ -248,7 +257,7 @@ function placeCards(
 		const paper = papers.get(card.key)!;
 		const color = colorFor(paper);
 		const nodeId = "n-" + canvasId();
-		ctx.nodes.push({
+		const node: CanvasTextNode = {
 			id: nodeId,
 			type: "text",
 			x: Math.round(x),
@@ -257,7 +266,8 @@ function placeCards(
 			height: card.height,
 			text: card.text,
 			...(color ? { color } : {}),
-		} as CanvasTextNode);
+		};
+		ctx.nodes.push(node);
 		ctx.paperNodeIds.set(card.key, nodeId);
 		ctx.paperBoxes.set(card.key, { x, y, w: CARD_W, h: card.height });
 		growBounds(ctx, x, y, CARD_W, card.height);
@@ -277,7 +287,7 @@ function renderBox(
 	}
 ): void {
 	const groupNodeId = "g-" + canvasId();
-	ctx.nodes.push({
+	const groupNode: CanvasGroupNode = {
 		id: groupNodeId,
 		type: "group",
 		x: Math.round(x),
@@ -286,7 +296,8 @@ function renderBox(
 		height: Math.round(measure.height),
 		label: container.label,
 		...(opts.groupColor ? { color: opts.groupColor } : {}),
-	} as CanvasGroupNode);
+	};
+	ctx.nodes.push(groupNode);
 	growBounds(ctx, x, y, measure.width, measure.height);
 
 	const cardsOriginX = x + PAD_X;

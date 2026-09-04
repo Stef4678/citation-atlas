@@ -206,7 +206,6 @@ export default class CitationAtlasPlugin extends Plugin {
 				throw new Error("Nothing to draw — no papers matched your selection.");
 			}
 
-			const label = model.containers.map((c) => c.label).join(" · ");
 			const tokens = {
 				mode: MODE_NOUN[mode],
 				date: todayStamp(),
@@ -280,13 +279,13 @@ export default class CitationAtlasPlugin extends Plugin {
 			await leaf.openFile(file);
 		} catch {
 			// fall back to link navigation for older Obsidian builds
-			this.app.workspace.openLinkText(path, "", false);
+			void this.app.workspace.openLinkText(path, "", false);
 		}
 	}
 
 	async loadSettings(): Promise<void> {
-		const data = await this.loadData();
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, data ?? {});
+		const data = (await this.loadData()) as Partial<CitationAtlasSettings> | null;
+		this.settings = { ...DEFAULT_SETTINGS, ...(data ?? {}) };
 	}
 
 	async saveSettings(): Promise<void> {

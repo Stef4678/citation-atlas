@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting, type SettingDefinitionItem } from "obsidian";
 import { PALETTE } from "./lib/reading";
 import type CitationAtlasPlugin from "./main";
 
@@ -86,6 +86,82 @@ export class CitationAtlasSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
+	/**
+	 * Declarative settings (Obsidian 1.13+): makes every setting searchable in
+	 * the settings modal. The values bind to `plugin.settings` by key; display()
+	 * still renders the tab on older Obsidian versions.
+	 */
+	getSettingDefinitions(): SettingDefinitionItem[] {
+		const s = this.plugin.settings;
+		const colorOptions = (): Record<string, string> => ({
+			"": "No color (default card)",
+			...Object.fromEntries(Object.entries(PALETTE).map(([value, name]) => [value, `${value} · ${name}`])),
+		});
+		const text = (name: string, desc: string | undefined, key: string, placeholder?: string): SettingDefinitionItem => ({
+			name,
+			desc,
+			control: { key, type: "text", placeholder },
+		});
+		const toggle = (name: string, desc: string | undefined, key: string): SettingDefinitionItem => ({
+			name,
+			desc,
+			control: { key, type: "toggle" },
+		});
+		const dropdown = (name: string, desc: string | undefined, key: string, options: Record<string, string>): SettingDefinitionItem => ({
+			name,
+			desc,
+			control: { key, type: "dropdown", options },
+		});
+		const slider = (name: string, desc: string | undefined, key: string, min: number, max: number, step: number): SettingDefinitionItem => ({
+			name,
+			desc,
+			control: { key, type: "slider", min, max, step },
+		});
+
+		return [
+			text("Zotero Local API base URL", "Citation Atlas reads your library through the Zotero Local API on this machine.", "zoteroBaseUrl", "http://127.0.0.1:23119"),
+			{
+				name: "Test connection / reload data",
+				desc: 'Zotero must be running with Settings → Advanced → "Allow other applications on this computer to communicate with Zotero" enabled.',
+				action: () => {
+					void this.plugin.testZotero();
+				},
+			},
+			text("Output folder", "Vault-relative folder for generated .canvas files (empty = vault root).", "outputFolder", "Citation Maps"),
+			text("File name pattern", "Supports {mode}, {date}, {time}, {count}. Existing files get a numeric suffix.", "fileNamePattern", "Citation Atlas - {mode} - {date}"),
+			toggle("Open the canvas after export", undefined, "openAfterExport"),
+			toggle("Wrap the whole map in one container group", "Lets you grab and move the entire literature map as a unit.", "wrapInRoot"),
+			text("Root container label", "Supports {mode}, {date}, {time}, {count}.", "rootLabel"),
+			toggle("Legend card", "Add a small legend node to the canvas explaining the colors.", "showLegend"),
+			toggle("Show Zotero key on cards", undefined, "showZoteroKey"),
+			dropdown("Container (collection) color", undefined, "collectionColor", colorOptions()),
+			slider("Max columns per collection grid", undefined, "maxColumns", 1, 6, 1),
+			toggle("Detect annotations automatically", "Papers with PDF/EPUB annotation child items in Zotero count as annotated, no tags needed.", "autoAnnotated"),
+			text("“Annotated” tags", "Comma separated. Applied on top of automatic annotation detection.", "annotatedTags"),
+			text("“Read” tags", 'Tag names that mark an item as read, e.g. "Read" (also matches "Read 2026-01-02").', "readTags"),
+			text("“Unread” tags", undefined, "unreadTags"),
+			toggle("“Read” tags match by prefix", "Treat “Read 2026-01-02” as a read tag when “Read” is configured.", "readTagPrefix"),
+			dropdown("Status when no signal matches", undefined, "stateFallback", {
+				unread: "Unread (recommended)",
+				read: "Read",
+			}),
+			dropdown("Annotated cards color", undefined, "colorAnnotated", colorOptions()),
+			dropdown("Read cards color", undefined, "colorRead", colorOptions()),
+			dropdown("Unread cards color", undefined, "colorUnread", colorOptions()),
+			toggle("Color out-of-selection cited works too", "When off, papers fetched only because they are cited stay uncolored to separate them from the reading map.", "colorExternals"),
+			toggle("Arrow points at the cited (older) work", "Only drawn when both papers have a publication year.", "edgeArrows"),
+			toggle("Add cited works outside the selection", "Fetch metadata of referenced papers that are not part of the pick and draw them in their own container.", "resolveExternals"),
+			slider("Max out-of-selection papers", "Hard cap so a densely citing collection cannot explode the canvas.", "maxExternals", 10, 200, 10),
+			toggle("Sort papers by year", "Oldest first inside every container; turn off to keep Zotero's own order.", "sortByYear"),
+			dropdown("Link paper cards to vault notes", "When a markdown note matches a paper, the card becomes a link to it.", "linkNoteMode", {
+				off: "Off — plain text cards",
+				citekey: "By Better BibTeX citation key",
+				title: "By exact note title",
+				both: "Citation key or exact title",
+			}),
+		];
+	}
+
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
@@ -109,13 +185,13 @@ export class CitationAtlasSettingTab extends PluginSettingTab {
 			.setName("Test connection / reload data")
 			.setDesc('Zotero must be running with Settings → Advanced → "Allow other applications on this computer to communicate with Zotero" enabled.')
 			.addButton((btn) =>
-				btn
-					.setButtonText("Test connection")
-					.onClick(async () => {
+				btn.setButtonText("Test connection").onClick(() => {
+					void (async () => {
 						const ok = await this.plugin.testZotero();
 						btn.setButtonText(ok ? "Connected ✓" : "Not reachable");
-						setTimeout(() => btn.setButtonText("Test connection"), 2500);
-					})
+						window.setTimeout(() => btn.setButtonText("Test connection"), 2500);
+					})();
+				})
 			);
 
 		new Setting(containerEl).setName("Output").setHeading();
@@ -213,7 +289,6 @@ export class CitationAtlasSettingTab extends PluginSettingTab {
 				s
 					.setLimits(1, 6, 1)
 					.setValue(this.plugin.settings.maxColumns)
-					.setDynamicTooltip()
 					.onChange(async (v) => {
 						this.plugin.settings.maxColumns = v;
 						await this.plugin.saveSettings();
@@ -341,7 +416,6 @@ export class CitationAtlasSettingTab extends PluginSettingTab {
 				s
 					.setLimits(10, 200, 10)
 					.setValue(this.plugin.settings.maxExternals)
-					.setDynamicTooltip()
 					.onChange(async (v) => {
 						this.plugin.settings.maxExternals = v;
 						await this.plugin.saveSettings();
