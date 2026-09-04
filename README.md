@@ -17,6 +17,18 @@ Pick Zotero **items**, a **collection**, or an **author** — Citation Atlas wri
   so the result is fully native Obsidian: you can annotate, cluster, recolor and
   rearrange the whole map by hand afterwards.
 
+## Screenshots
+
+![Citation Atlas — pick collections, items or an author](assets/Screenshot%202026-09-04%20203745.png)
+
+![Citation Atlas — searchable multi-select in the export dialog](assets/Screenshot%202026-09-04%20203823.png)
+
+![Citation Atlas — the generated canvas citation map](assets/Screenshot%202026-09-04%20203955.png)
+
+![Citation Atlas — papers, citation edges and collection containers](assets/Screenshot%202026-09-04%20204005.png)
+
+![Citation Atlas — reading-status colors and legend on the map](assets/Screenshot%202026-09-04%20204013.png)
+
 ## How it reads Zotero
 
 Citation Atlas talks to the **Zotero Local API** on `localhost:23119`
