@@ -2,7 +2,7 @@ name: release
 
 # Builds the plugin, cryptographically attests the release assets against the
 # source repository (GitHub artifact attestations), and publishes them to the
-# GitHub Release tagged with the version (e.g. tag "0.0.1").
+# GitHub Release tagged with the version (e.g. tag "0.0.2").
 on:
   push:
     tags:
@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -40,6 +42,39 @@ jobs:
             manifest.json
             styles.css
 
+      - name: Generate release notes (version history)
+        run: |
+          PREV="$(git tag --sort=-version:refname | sed -n '2p' || true)"
+          cat > release-body.md <<'BODY'
+          Export Zotero items/collections/authors to native Obsidian **.canvas citation maps** (JSON Canvas).
+
+          ## Features
+          - Papers as text cards, citations as edges, collections as container groups
+          - Cards colored by reading status: annotated / read / unread
+          - Nested sub-collection groups, optional cited-works-outside-selection expansion
+          - Link cards to vault notes (Better BibTeX citation key / exact title)
+          - Reads your library read-only via the Zotero Local API (no key, offline)
+
+          ## Install
+          Copy `main.js`, `manifest.json`, `styles.css` into `.obsidian/plugins/citation-atlas/` (or use BRAT).
+
+          ## First time setup
+          In **Zotero → Settings → Advanced**, tick **Allow other applications on this computer to communicate with Zotero** and restart Zotero.
+
+          BODY
+          {
+            echo
+            if [ -n "$PREV" ] && [ "$PREV" != "$GITHUB_REF_NAME" ]; then
+              echo "## What's changed since $PREV"
+              git log --oneline --no-merges "$PREV..HEAD" | sed 's/^/  - /'
+              echo
+              echo "Compare: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/$PREV...$GITHUB_REF_NAME"
+            else
+              echo "## What's changed"
+              echo "  - Initial tagged release."
+            fi
+          } >> release-body.md
+
       - name: Remove stale assets from the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -53,22 +88,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Citation Atlas ${{ github.ref_name }}
+          body_path: release-body.md
           files: |
             main.js
             manifest.json
             styles.css
-          body: |
-            Export Zotero items/collections/authors to native Obsidian **.canvas citation maps** (JSON Canvas).
-
-            ## Features
-            - Papers as text cards, citations as edges, collections as container groups
-            - Cards colored by reading status: annotated / read / unread
-            - Nested sub-collection groups, optional cited-works-outside-selection expansion
-            - Link cards to vault notes (Better BibTeX citation key / exact title)
-            - Reads your library read-only via the Zotero Local API (no key, offline)
-
-            ## Install
-            Copy `main.js`, `manifest.json`, `styles.css` into `.obsidian/plugins/citation-atlas/` (or use BRAT).
-
-            ## First time setup
-            In **Zotero → Settings → Advanced**, tick **Allow other applications on this computer to communicate with Zotero** and restart Zotero.
