@@ -92,7 +92,6 @@ export class CitationAtlasSettingTab extends PluginSettingTab {
 	 * still renders the tab on older Obsidian versions.
 	 */
 	getSettingDefinitions(): SettingDefinitionItem[] {
-		const s = this.plugin.settings;
 		const colorOptions = (): Record<string, string> => ({
 			"": "No color (default card)",
 			...Object.fromEntries(Object.entries(PALETTE).map(([value, name]) => [value, `${value} · ${name}`])),
@@ -189,7 +188,9 @@ export class CitationAtlasSettingTab extends PluginSettingTab {
 					void (async () => {
 						const ok = await this.plugin.testZotero();
 						btn.setButtonText(ok ? "Connected ✓" : "Not reachable");
-						window.setTimeout(() => btn.setButtonText("Test connection"), 2500);
+						window.setTimeout(() => {
+							btn.setButtonText("Test connection");
+						}, 2500);
 					})();
 				})
 			);
