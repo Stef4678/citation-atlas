@@ -1,0 +1,73 @@
+name: release
+
+# Builds the plugin, cryptographically attests the release assets against the
+# source repository (GitHub artifact attestations), and publishes them to the
+# GitHub Release tagged with the version (e.g. tag "0.0.1").
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck and build
+        run: npm run build
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
+
+      - name: Remove stale assets from the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for asset in main.js manifest.json styles.css; do
+            gh release delete-asset "$GITHUB_REF_NAME" "$asset" \
+              --repo "$GITHUB_REPOSITORY" --yes >/dev/null 2>&1 || true
+          done
+
+      - name: Create/update release with attested assets
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Citation Atlas ${{ github.ref_name }}
+          files: |
+            main.js
+            manifest.json
+            styles.css
+          body: |
+            Export Zotero items/collections/authors to native Obsidian **.canvas citation maps** (JSON Canvas).
+
+            ## Features
+            - Papers as text cards, citations as edges, collections as container groups
+            - Cards colored by reading status: annotated / read / unread
+            - Nested sub-collection groups, optional cited-works-outside-selection expansion
+            - Link cards to vault notes (Better BibTeX citation key / exact title)
+            - Reads your library read-only via the Zotero Local API (no key, offline)
+
+            ## Install
+            Copy `main.js`, `manifest.json`, `styles.css` into `.obsidian/plugins/citation-atlas/` (or use BRAT).
+
+            ## First time setup
+            In **Zotero → Settings → Advanced**, tick **Allow other applications on this computer to communicate with Zotero** and restart Zotero.
