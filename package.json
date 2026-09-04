@@ -1,6 +1,6 @@
 {
 	"name": "citation-atlas",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Citation-map canvas export for Zotero inside Obsidian",
 	"main": "main.js",
 	"scripts": {
